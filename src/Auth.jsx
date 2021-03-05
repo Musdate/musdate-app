@@ -23,16 +23,15 @@ function Auth(props) {
     return(
         <div>
             {
-                
-                    <div>
-                        <label htmlFor="email">Correo electrónico</label>
-                        <input type="email" id="email" onChange={(e1) => setEmail(e1.target.value)} />
-                        {console.log("inputEMAIL", email)}
-                        <label htmlFor="password">Contraseña</label>
-                        <input type="password" id="password" onChange={(e2) => setPassword(e2.target.value)} />
-                        <button onClick={submit}>Crear cuenta</button>
-                        <button onClick={login}>Iniciar sesión</button>
-                    </div>
+                <div>
+                    <label htmlFor="email">Correo electrónico</label>
+                    <input type="email" id="email" onChange={(e1) => setEmail(e1.target.value)} />
+                    {console.log("inputEMAIL", email)}
+                    <label htmlFor="password">Contraseña</label>
+                    <input type="password" id="password" onChange={(e2) => setPassword(e2.target.value)} />
+                    <button onClick={submit}>Crear cuenta</button>
+                    <button onClick={login}>Iniciar sesión</button>
+                </div>
             }
             {
                 user && <button onClick={logout}>Cerrar sesión</button>

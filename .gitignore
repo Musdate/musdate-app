@@ -8,6 +8,11 @@
 # testing
 /coverage
 
+#hosting
+/.firebase
+.firebaserc
+firebase-debug.log
+
 # production
 /build
 
@@ -22,4 +27,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 yarn.lock
-firebase-debug.log
