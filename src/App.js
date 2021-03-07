@@ -1,5 +1,5 @@
-import { useFirebaseApp } from 'reactfire';
 import { useEffect, useState } from 'react';
+import { useFirebaseApp } from 'reactfire';
 import Login from './components/Login';
 import Hero from './components/Hero';
 import './App.css';
@@ -77,23 +77,23 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <div>
             {user ?
                 <Hero
                     handleLogOut={handleLogOut}
                 />
             :
                 <Login
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                handleLogin={handleLogin}
-                handleSingup={handleSingup}
-                hasAccount={hasAccount}
-                setHasAccount={setHasAccount}
-                emailError={emailError}
-                passwordError={passwordError}
+                    email={email}
+                    setEmail={setEmail}
+                    password={password}
+                    setPassword={setPassword}
+                    handleLogin={handleLogin}
+                    handleSingup={handleSingup}
+                    hasAccount={hasAccount}
+                    setHasAccount={setHasAccount}
+                    emailError={emailError}
+                    passwordError={passwordError}
                 />
             }
         </div>
