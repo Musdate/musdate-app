@@ -12,6 +12,24 @@ const GridSession = styled(Grid)`
     padding: 3%;
     color: #e6e4d6;
     border-radius: 15px;
+    @media (max-width: 1450px) {
+        padding: 4%;
+    }
+    @media (max-width: 1200px) {
+        width: 350px;
+        padding: 5%;
+    }
+    @media (max-width: 767px) {
+        padding: 7%;
+    }
+    @media (max-width: 575px) {
+        width: 320px;
+        padding: 9%;
+    }
+    @media (max-width: 320px) {
+        width: 285px;
+        padding: 15%;
+    }
 `;
 
 const InputSession = styled.input`
@@ -45,11 +63,14 @@ const SpanSession = styled.span`
 `;
 
 const Backimage = styled.div`
-    height: calc(100vh - 100px);
+    height: 100vh;
     background-image: url(${backgroundImage});
     background-size: cover;
-    padding-top: 100px;
+    display: flex;
+    align-items: center;
 `;
+
+
 
 function Auth(props) {
     const {
@@ -65,6 +86,16 @@ function Auth(props) {
         passwordError
     } = props
 
+    const handleSearch = (e) => {
+        if(e.key === 'Enter') {
+            if(hasAccount) {
+                handleLogin();
+            }else {
+                handleSingup();
+            }
+        }
+    }
+
     return(
         <Backimage>
             <GridSession>
@@ -72,7 +103,13 @@ function Auth(props) {
                     <label htmlFor="email">Correo electrónico</label>
                 </Row>
                 <Row>
-                    <InputSession type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <InputSession
+                        type="email"
+                        id="email"
+                        value={email}
+                        onKeyDown={(e) => handleSearch(e)}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </Row>
                 <Row>
                     <p>{emailError}</p>
@@ -81,7 +118,13 @@ function Auth(props) {
                     <label htmlFor="password">Contraseña</label>
                 </Row>
                 <Row>
-                    <InputSession type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <InputSession
+                        type="password"
+                        id="password"
+                        value={password}
+                        onKeyDown={(e) => handleSearch(e)}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                 </Row>
                 <Row>
                     <p>{passwordError}</p>
@@ -94,7 +137,7 @@ function Auth(props) {
                         <Row end="xs">
                             <p>
                                 No tienes una cuenta ?
-                                <SpanSession onClick={() => setHasAccount(!hasAccount)}> Crear cuenta</SpanSession>
+                                <SpanSession onClick={() => setHasAccount(!hasAccount)}> Crear</SpanSession>
                             </p>
                         </Row>
                     </>

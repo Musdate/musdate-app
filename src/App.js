@@ -35,6 +35,7 @@ function App() {
 
     useEffect(() => {
         authListener();
+    //eslint-disable-next-line
     }, [])
 
     const handleLogin = () => {
