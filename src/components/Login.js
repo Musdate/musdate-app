@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Col, Grid, Row } from 'react-flexbox-grid';
 import backgroundImage from '../.images/FantasyForest.png'
 import styled from 'styled-components'
 import 'firebase/auth';
+import { useAuth } from '../contexts/AuthContext';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const GridSession = styled(Grid)`
     height: 400px;
@@ -41,6 +44,11 @@ const ButtonSession = styled.button`
     margin: 15px 0px 0px 0px;
     &:hover {
         background: radial-gradient(circle, rgb(110, 65, 170) 0%, rgb(100, 70, 135) 80%);
+    }
+    
+    &:disabled {
+        cursor: default;
+        background: #6a63735e;
     }
 `
 const Backimage = styled.div`
@@ -81,29 +89,65 @@ const ErrorMsg = styled.p`
 `
 
 function Auth(props) {
-    const {
-        email,
-        setEmail,
-        password,
-        setPassword,
-        handleLogin,
-        handleSingup,
-        hasAccount,
-        setHasAccount,
-        emailError,
-        passwordError,
-        clearInputs,
-        clearErrors
-    } = props
-
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const { singUp, login } = useAuth()
+    const [loading, setLoading] = useState(false)
+    const history = useHistory()
+    const [ hasAccount, setHasAccount ] = useState(true);
+    const [error, setError] = useState("")
+    const [emailError, setEmailError] = useState("")
+    const [passwordError, setPasswordError] = useState("")
     const [ handleStyle, setHandleStyle ] = useState("")
+
+    async function handleSingUp(e) {
+        e.preventDefault()
+        try {
+            setLoading(true)
+            await singUp(emailRef.current.value, passwordRef.current.value)
+            history.push("/")
+        } catch(r) {
+            switch(r.code){
+                case "auth/email-already-in-use":
+                    return setEmailError("El correo ya está en uso")
+                case "auth/invalid-email":
+                    return setEmailError("Correo invalido")
+                case "auth/weak-password":
+                    return setPasswordError("Contraseña muy debil")
+                default: setError("Falló el registro")
+            }
+        }
+        setLoading(false)
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault()
+        try {
+            setLoading(true)
+            await login(emailRef.current.value, passwordRef.current.value)
+            history.push("/")
+        } catch(r) {
+            switch(r.code){
+                case "auth/invalid-email":
+                    return setEmailError("Correo invalido")
+                case "auth/user-disabled":
+                    return setEmailError("Usuario deshabilitado")
+                case "auth/user-not-found":
+                    return setEmailError("Usuario no encontrado")
+                case "auth/wrong-password":
+                    return setPasswordError("Contraseña incorrecta")
+                    default: setError("Falló el inicio de sesion")
+            }
+        }
+        setLoading(false)
+    }
 
     const handleSearch = (e) => {
         if(e.key === 'Enter') {
             if(hasAccount) {
-                handleLogin();
+                handleLogin(e);
             }else {
-                handleSingup();
+                handleSingUp(e);
             }
         }
     }
@@ -118,8 +162,9 @@ function Auth(props) {
                             onClick={() => {
                                 setHasAccount(false)
                                 setHandleStyle("registrarse")
-                                clearInputs()
-                                clearErrors()
+                                setEmailError("")
+                                setPasswordError("")
+                                setLoading(false)
                             }}
                         >
                             Registrarse
@@ -129,7 +174,9 @@ function Auth(props) {
                             onClick={() => {
                                 setHasAccount(true)
                                 setHandleStyle("ingresar")
-                                clearErrors()
+                                setEmailError("")
+                                setPasswordError("")
+                                setLoading(false)
                             }}
                         >
                             Ingresar
@@ -144,9 +191,13 @@ function Auth(props) {
                         <InputSession
                             type="email"
                             id="email"
-                            value={email}
+                            ref={emailRef}
                             onKeyDown={(e) => handleSearch(e)}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={() => {
+                                setLoading(false)
+                                setEmailError("")
+                            }}
+                            required
                         />
                     </Row>
                     <Row>
@@ -159,21 +210,30 @@ function Auth(props) {
                         <InputSession
                             type="password"
                             id="password"
-                            value={password}
+                            ref={passwordRef}
                             onKeyDown={(e) => handleSearch(e)}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={() => {
+                                setLoading(false)
+                                setPasswordError("")
+                            }}
+                            required
                         />
                     </Row>
                     <Row>
                         <ErrorMsg>{passwordError}</ErrorMsg>
                     </Row>
-                    {hasAccount ?
-                        <Row>
-                            <ButtonSession onClick={handleLogin}>Ingresar</ButtonSession>
-                        </Row>
+                    {hasAccount  ?
+                        <>
+                            <Row>
+                                <ButtonSession disabled={loading} onClick={handleLogin}>Ingresar</ButtonSession>
+                            </Row>
+                            <Row>
+                                <Link to="/reset-password">Olvidaste tu contraseña ?</Link>
+                            </Row>
+                        </>
                     :
                         <Row>
-                            <ButtonSession onClick={handleSingup}>Crear cuenta</ButtonSession>
+                            <ButtonSession disabled={loading} onClick={handleSingUp}>Crear cuenta</ButtonSession>
                         </Row>
                     }
                 </DivContent>
