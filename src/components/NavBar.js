@@ -9,9 +9,7 @@ const DivNavBar = styled.div`
 
 function NavBar(props) {
     return (
-        <DivNavBar>
-
-        </DivNavBar>
+        <DivNavBar />
     );
 }
 
