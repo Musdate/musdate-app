@@ -45,6 +45,7 @@ const ButtonSession = styled.button`
 const Backimage = styled.div`
     height: 100vh;
     background-image: url(${backgroundImage});
+    background-color: #3f3150;
     background-size: cover;
     display: flex;
     align-items: center;
