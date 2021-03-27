@@ -8,15 +8,15 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const [currentUser, setCurrentUser] = useState()
-    const [loading, setLoading] = useState(true)
+    const [ currentUser, setCurrentUser ] = useState()
+    const [ loading, setLoading ] = useState(true)
 
     function singUp(email, password) {
-        return auth.createUserWithEmailAndPassword(email,password)
+        return auth.createUserWithEmailAndPassword(email, password)
     }
 
     function login(email, password) {
-        return auth.signInWithEmailAndPassword(email,password)
+        return auth.signInWithEmailAndPassword(email, password)
     }
 
     function logout() {
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     }
 
     useEffect(() => {
-        const unsubscribe =auth.onAuthStateChanged(user => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
             setCurrentUser(user)
             setLoading(false)
         })
@@ -46,17 +46,17 @@ export function AuthProvider({ children }) {
 
     const value = {
         currentUser,
-        singUp,
-        login,
-        logout,
+        updatePassword,
         resetPassword,
         updateEmail,
-        updatePassword
+        singUp,
+        logout,
+        login
     }
 
     return (
         <AuthContext.Provider value={value}>
             {!loading && children}
         </AuthContext.Provider>
-    )
+    );
 }

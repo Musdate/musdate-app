@@ -1,7 +1,7 @@
 import firebase from "firebase/app"
 import "firebase/auth"
 
-const app = firebase.initializeApp( {
+const app = firebase.initializeApp({
     apiKey: "AIzaSyCnATu1Nxkj2GDUTwJibxbkRgS6pDe-2f4",
     authDomain: "musdate-react-app.firebaseapp.com",
     projectId: "musdate-react-app",

@@ -1,23 +1,20 @@
 import React, { useRef, useState } from 'react';
 import { Col, Grid, Row } from 'react-flexbox-grid';
+import { useHistory } from 'react-router';
+import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import backgroundImage from '../.images/FantasyForest.png'
 import styled from 'styled-components'
 import 'firebase/auth';
-import { useAuth } from '../contexts/AuthContext';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
 
 const GridSession = styled(Grid)`
     height: 400px;
+    max-height: max-content;
     width: 350px;
     background-image: linear-gradient(to bottom right, #764c9b, #1d172b);
     15px 15px 25px 10px #00000080;
     color: #e6e4d6;
     border-radius: 15px;
-    @media (max-width: 1200px) {
-    }
-    @media (max-width: 767px) {
-    }
     @media (max-width: 575px) {
         width: 300px;
     }
@@ -31,7 +28,6 @@ const InputSession = styled.input`
     outline: none;
     margin-top: 10px;
     padding-left: 10px;
-
 `
 const ButtonSession = styled.button`
     width: 100%;
@@ -45,7 +41,6 @@ const ButtonSession = styled.button`
     &:hover {
         background: radial-gradient(circle, rgb(110, 65, 170) 0%, rgb(100, 70, 135) 80%);
     }
-    
     &:disabled {
         cursor: default;
         background: #6a63735e;
@@ -86,19 +81,30 @@ const DivContent = styled.div`
 const ErrorMsg = styled.p`
     color: #c6384c;
     margin: 5px 0px 15px 10px;
+    ${props => props.header && `
+        margin: 0px;
+    `}
+`
+const FooterLink = styled(Link)`
+    color: #eaea5f;
+    line-height: 35px;
+    text-decoration: none;
+    &:hover {
+        color: #ff0;
+    }
 `
 
 function Auth(props) {
-    const emailRef = useRef()
-    const passwordRef = useRef()
     const { singUp, login } = useAuth()
-    const [loading, setLoading] = useState(false)
-    const history = useHistory()
-    const [ hasAccount, setHasAccount ] = useState(true);
-    const [error, setError] = useState("")
-    const [emailError, setEmailError] = useState("")
-    const [passwordError, setPasswordError] = useState("")
+    const [ passwordError, setPasswordError ] = useState("")
+    const [ hasAccount, setHasAccount ] = useState(true)
     const [ handleStyle, setHandleStyle ] = useState("")
+    const [ emailError, setEmailError ] = useState("")
+    const [ loading, setLoading ] = useState(false)
+    const [ error, setError]  = useState("")
+    const history = useHistory()
+    const passwordRef = useRef()
+    const emailRef = useRef()
 
     async function handleSingUp(e) {
         e.preventDefault()
@@ -127,7 +133,7 @@ function Auth(props) {
             await login(emailRef.current.value, passwordRef.current.value)
             history.push("/")
         } catch(r) {
-            switch(r.code){
+            switch(r.code) {
                 case "auth/invalid-email":
                     return setEmailError("Correo invalido")
                 case "auth/user-disabled":
@@ -136,7 +142,7 @@ function Auth(props) {
                     return setEmailError("Usuario no encontrado")
                 case "auth/wrong-password":
                     return setPasswordError("Contraseña incorrecta")
-                    default: setError("Falló el inicio de sesion")
+                default: setError("Falló el inicio de sesion")
             }
         }
         setLoading(false)
@@ -145,14 +151,14 @@ function Auth(props) {
     const handleSearch = (e) => {
         if(e.key === 'Enter') {
             if(hasAccount) {
-                handleLogin(e);
+                handleLogin(e)
             }else {
-                handleSingUp(e);
+                handleSingUp(e)
             }
         }
     }
 
-    return(
+    return (
         <Backimage>
             <GridSession>
                 <div>
@@ -182,6 +188,11 @@ function Auth(props) {
                             Ingresar
                         </ButtonIngresar>
                     </RowActions>
+                    {error &&
+                        <Row center="xs">
+                            <ErrorMsg header>{error}</ErrorMsg>
+                        </Row>
+                    }
                 </div>
                 <DivContent>
                     <Row>
@@ -222,13 +233,13 @@ function Auth(props) {
                     <Row>
                         <ErrorMsg>{passwordError}</ErrorMsg>
                     </Row>
-                    {hasAccount  ?
+                    {hasAccount ?
                         <>
                             <Row>
                                 <ButtonSession disabled={loading} onClick={handleLogin}>Ingresar</ButtonSession>
                             </Row>
-                            <Row>
-                                <Link to="/reset-password">Olvidaste tu contraseña ?</Link>
+                            <Row end="xs">
+                                <FooterLink to="/reset-password">Olvidaste tu contraseña?</FooterLink>
                             </Row>
                         </>
                     :
@@ -239,7 +250,7 @@ function Auth(props) {
                 </DivContent>
             </GridSession>
         </Backimage>
-    )
+    );
 }
 
 export default Auth
