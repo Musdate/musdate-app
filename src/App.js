@@ -11,15 +11,14 @@ import {
 } from "react-router-dom";
 
 function App() {
-
     return (
         <Router>
             <AuthProvider>
                 <Switch>
-                    <PrivateRoute exact path='/' component={Main} />
                     <PrivateRoute path='/update-profile' component={UpdateProfile} />
                     <Route path='/login' component={Login} />
                     <Route path='/reset-password' component={ResetPassword} />
+                    <PrivateRoute exact path='/' component={Main} />
                 </Switch>
             </AuthProvider>
         </Router>

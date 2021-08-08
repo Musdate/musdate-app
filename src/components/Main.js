@@ -1,29 +1,30 @@
 import React from 'react';
-import { useHistory } from 'react-router';
-import { Grid, Row } from 'react-flexbox-grid';
-import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Grid } from '@material-ui/core';
+import styled from 'styled-components';
+import mangas from '../TuMangaOnline-20210805-23.json'
+
+const GridBox = styled(Grid)`
+    width: 250px;
+    height: 350px;
+    background-image: url(${props => props.image});
+`
 
 const Main = () => {
-    const {currentUser, logout} = useAuth()
-    const history = useHistory()
 
-    async function handleLogout() {
-        await logout()
-        history.push("/login")
-    }
+    let mangasSlices = mangas.slice(0,49)
 
     return (
-        <Grid>
-            <Row center="xs">
-                <h2>Welcome {currentUser.email}</h2>
-            </Row>
-            <Row center="xs">
-                <Link to="/update-profile">Update Profile</Link>
-            </Row>
-            <Row center="xs">
-                <button onClick={handleLogout}>Logout</button>
-            </Row>
+        <Grid container>
+            <Grid container direction="row" justifyContent="space-around">
+                <h1>Populares</h1>
+                <h1>Otros</h1>
+                <h1>Otros</h1>
+            </Grid>
+            <Grid container justifyContent="space-around" spacing={5}>
+                {mangasSlices.map((p, index) =>
+                   <GridBox item image={p.product.image} />
+                )}
+            </Grid>
         </Grid>
     );
 }
