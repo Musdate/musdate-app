@@ -8,9 +8,7 @@ const GridBox = styled(Grid)`
     height: 350px;
     background-image: url(${props => props.image});
 `
-const Titulo = styled.p`
-    color: black;
-`
+
 const Main = () => {
 
     let mangasSlices = mangas.slice(0,49)
