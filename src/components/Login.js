@@ -48,8 +48,7 @@ const ButtonSession = styled.button`
 `
 const Backimage = styled.div`
     height: 100vh;
-    background-image: url(${backgroundImage});
-    background-color: #3f3150;
+    background-image: url(${backgroundImage}), linear-gradient(to right, #23182d 0%, #493557 50%, #595478 75%, #2e1f33 100%);
     background-size: cover;
     display: flex;
     align-items: center;
@@ -254,4 +253,4 @@ function Auth(props) {
     );
 }
 
-export default Auth
+export default Auth;
