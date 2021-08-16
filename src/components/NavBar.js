@@ -1,8 +1,8 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
+import { Grid } from '@material-ui/core';
+import styled from 'styled-components';
 
 const DivNavBar = styled(Grid)`
     background: #527c8d;
@@ -65,13 +65,13 @@ function NavBar(props) {
     return (
         <DivNavBar container direction="row" justifyContent="space-around" id="NavBar">
             <InicioButton to="/">Inicio</InicioButton>
-            <OtrosButton>Otros</OtrosButton>
-            <OtrosButton>Otros</OtrosButton>
-            <OtrosButton>Otros</OtrosButton>
+            <OtrosButton style={{color: 'grey'}}>Otros</OtrosButton>
+            <OtrosButton style={{color: 'grey'}}>Otros</OtrosButton>
+            <OtrosButton style={{color: 'grey'}}>Otros</OtrosButton>
             <DropDown id="DropDown">
                 <DropDownContent id="DropDownContent">
                     <DropDownElement to="/update-profile">Actualizar Perfil</DropDownElement>
-                    <DropDownElement onClick={handleLogout}>Desconectarse</DropDownElement>
+                    <DropDownElement to='#' onClick={handleLogout}>Desconectarse</DropDownElement>
                 </DropDownContent>
                 {currentUser.email}
             </DropDown>

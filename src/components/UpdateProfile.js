@@ -58,10 +58,7 @@ const DivContent = styled.div`
 `
 const ErrorMsg = styled.p`
     color: #c6384c;
-    margin: 5px 0px 15px 10px;
-    ${props => props.header && `
-        margin: 0px;
-    `}
+    margin: ${props => props.header ? '0px;' : '5px 0px 15px 10px;'}
 `
 const FooterLink = styled(Link)`
     color: #eaea5f;
@@ -182,4 +179,4 @@ function UpdateProfile(props) {
     );
 }
 
-export default UpdateProfile
+export default UpdateProfile;
