@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
-import styled from 'styled-components';
-import { db } from '../firebase';
 import { Link } from 'react-router-dom';
+import { db } from '../firebase';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
+import styled from 'styled-components';
 
 const GridContainer = styled(Grid)`
     max-width: 1500px;
@@ -61,12 +61,19 @@ const BottomBox = styled.div`
     text-align: center;
     position: absolute;
     color: white;
-    background-color: ${props =>
-        props.demoColor === 'Seinen' && 'rgba(166, 12, 12, 0.74);' ||
-        props.demoColor === 'Shoujo' && 'rgba(206, 117, 192, 0.74);' ||
-        props.demoColor === 'Shounen' && 'rgba(223, 130, 30, 0.74);' ||
-        'rgba(113, 11, 159, 0.74);'}
-    rgba(0,0,0,.6);
+    background-color:
+    ${props =>
+        props.demoColor === 'Seinen' && `rgba(166, 12, 12, 0.74);`
+    }
+    ${props =>
+        props.demoColor === 'Shoujo' && `rgba(206, 117, 192, 0.74);`
+    }
+    ${props =>
+        props.demoColor === 'Shounen' && `rgba(223, 130, 30, 0.74);`
+    }
+    ${props =>
+        props.demoColor === 'Josei' && `rgba(113, 11, 159, 0.74);`
+    }
     width: 100%;
     bottom: 0px;
     min-height: 35px;
@@ -79,15 +86,9 @@ const RatingBox = styled(Grid)`
     padding-right: 5px;
     font-weight: 700;
 `
-
-const getMangas = async (setMangas, catState) => {
-    const querySnapshot = await db.collection(catState.toLowerCase()).where('rating', '>', '8.5').limit(24).get();
-    const mangas = []
-    querySnapshot.forEach(doc => {
-        mangas.push({...doc.data()})
-    });
-    setMangas(mangas);
-}
+const StarRate = styled(StarRateRoundedIcon)`
+    color: #ffdc5e;
+`
 
 const Box = (props) => {
     const {
@@ -107,7 +108,7 @@ const Box = (props) => {
                         {title}
                     </TitleBox>
                     <RatingBox container direction="row" alignItems="center">
-                        <StarRateRoundedIcon style={{color: '#ffdc5e'}} />
+                        <StarRate />
                         {rating}
                     </RatingBox>
                 </TopBox>
@@ -120,10 +121,23 @@ const Box = (props) => {
     );
 }
 
+const getMangas = async (setMangas, catState) => {
+    await db.collection(catState.toLowerCase())
+        .where('rating', '>', '8.5')
+        .limit(24)
+        .get()
+        .then(querySnapshot => {
+            const mangas = []
+            querySnapshot.forEach(doc => {
+                mangas.push({...doc.data()})
+            });
+            setMangas(mangas);
+        });
+}
+
 function Main(props) {
     const [catState, setCatState] = useState('MANGA')
     const [mangas, setMangas] = useState([])
-    //let mangasSlices = mangas.slice(0,49)
 
     useEffect(() => {
         getMangas(setMangas, catState);
@@ -139,7 +153,7 @@ function Main(props) {
             <Grid container justifyContent="space-between">
                 {mangas.map((p, index) => (
                     <Box
-                        key={p.id}
+                        key={index}
                         title={p.title}
                         image={p.image}
                         demography={p.demography}
