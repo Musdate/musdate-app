@@ -11,6 +11,7 @@ import {
     Route
 } from "react-router-dom";
 import PageNotFound from "./components/PageNotFound";
+import Chapter from "./components/Chapter";
 
 function App() {
     return (
@@ -21,7 +22,8 @@ function App() {
                     <Route path='/login' component={Login} />
                     <Route path='/reset-password' component={ResetPassword} />
                     <PrivateRoute exact path='/' component={Main} />
-                    <PrivateRoute path='/:category/:productId' component={ProductView} />
+                    <PrivateRoute exact path='/:category/:productId' component={ProductView} />
+                    <PrivateRoute exact path='/:category/:productId/:index' component={Chapter} />
                     <Route component={PageNotFound} />
                 </Switch>
             </AuthProvider>

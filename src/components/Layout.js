@@ -5,7 +5,7 @@ import NavBar from './NavBar';
 
 const DivContent = styled.div`
     background: #EAEDED;
-    min-height: 100vh;
+    min-height: calc(100vh - 150px);
 `
 
 function Layout(props) {

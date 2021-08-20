@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { db } from '../firebase';
 import styled from 'styled-components';
@@ -8,23 +8,38 @@ const Image = styled.img`
     width: 100%;
 `
 
-const getMangas = async (category, productId, setManga, setIsLoading) => {
+const getMangas = async (category, productId, setManga, setIsLoading, setChapters) => {
     await db.collection(category)
         .where('productId', '==', productId)
         .get()
         .then(doc => {
             setManga(doc.docs[0].data())
-            setIsLoading(false)
+
+            db.collection(`${category}_chapters`)
+                .where('productId', '==', productId)
+                .orderBy('index')
+                .get()
+                .then(querySnapshot => {
+                    const chapters = []
+                    querySnapshot.forEach(doc2 => {
+                        chapters.push({id: doc2.id, ...doc2.data()})
+                    });
+                    setChapters(chapters)
+                    setIsLoading(false)
+                });
+
         });
 }
 
 function ProductView(props) {
     const { productId, category } = useParams();
     const [ manga, setManga ] = useState();
+    const [ chapters, setChapters] = useState();
     const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
-        getMangas(category, productId, setManga, setIsLoading);
+        setIsLoading(true)
+        getMangas(category, productId, setManga, setIsLoading, setChapters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -52,8 +67,15 @@ function ProductView(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid style={{background: 'aquamarine', textAlign: 'center'}}>
-                        <h1>SECCION DE CAPITULOS AQUI</h1>
+                    <Grid style={{textAlign: 'center'}}>
+                        <h1>SECCION DE CAPITULOS:</h1>
+                        {chapters.map((chap, index) => (
+                            <Link to={`/${category}/${productId}/${chap.id}`}>
+                                <div style={{background: 'aquamarine'}}>
+                                    {chap.name}
+                                </div>
+                            </Link>
+                        ))}
                     </Grid>
                 </>
             }

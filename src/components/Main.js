@@ -123,7 +123,7 @@ const Box = (props) => {
 
 const getMangas = async (setMangas, catState) => {
     await db.collection(catState.toLowerCase())
-        .where('rating', '>', '8.5')
+        //.where('rating', '>', '8.5')
         .limit(24)
         .get()
         .then(querySnapshot => {
