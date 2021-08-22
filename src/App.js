@@ -2,7 +2,9 @@ import { AuthProvider } from "./contexts/AuthContext"
 import ResetPassword from './components/ResetPassword';
 import UpdateProfile from './components/UpdateProfile';
 import PrivateRoute from './components/PrivateRoute';
+import PageNotFound from "./components/PageNotFound";
 import ProductView from "./components/ProductView";
+import Chapter from "./components/Chapter";
 import Login from './components/Login';
 import Main from './components/Main';
 import {
@@ -10,20 +12,18 @@ import {
     Switch,
     Route
 } from "react-router-dom";
-import PageNotFound from "./components/PageNotFound";
-import Chapter from "./components/Chapter";
 
 function App() {
     return (
         <Router>
             <AuthProvider>
                 <Switch>
-                    <PrivateRoute path='/update-profile' component={UpdateProfile} />
                     <Route path='/login' component={Login} />
-                    <Route path='/reset-password' component={ResetPassword} />
+                    <Route path='/password/reset' component={ResetPassword} />
+                    <PrivateRoute path='/profile/update' component={UpdateProfile} />
                     <PrivateRoute exact path='/' component={Main} />
                     <PrivateRoute exact path='/:category/:productId' component={ProductView} />
-                    <PrivateRoute exact path='/:category/:productId/:index' component={Chapter} />
+                    <PrivateRoute exact path='/:category/:chapId/:scanId/page=:chapIndex' component={Chapter} />
                     <Route component={PageNotFound} />
                 </Switch>
             </AuthProvider>

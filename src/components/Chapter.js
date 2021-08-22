@@ -3,25 +3,28 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 
-const getChapters = async (category, productId, setIsLoading, index, setChapter) => {
+const getChapters = async (category, chapId, scanId, chapIndex, setIsLoading, setChapter) => {
     await db.collection(`${category}_chapters`)
-        .doc(index)
+        .doc(chapId)
         .collection('scans')
+        .doc(scanId)
         .get()
         .then(snapshot => {
-            setChapter(snapshot.docs[0].data())
-            setIsLoading(false)
-        })
+            setChapter({...snapshot.data()})
+            console.log('FLAG2', {...snapshot.data()})
+
+        });
+        setIsLoading(false)
 }
 
 function Chapter(props) {
-    const { productId, category, index } = useParams();
+    const { category, chapId, scanId, chapIndex } = useParams();
     const [ isLoading, setIsLoading ] = useState(true);
     const [ chapter, setChapter ] = useState();
 
     useEffect(() => {
         setIsLoading(true)
-        getChapters(category, productId, setIsLoading, index, setChapter);
+        getChapters(category, chapId, scanId, chapIndex, setIsLoading, setChapter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -32,14 +35,11 @@ function Chapter(props) {
                     <h1>LOADING...</h1>
                 </Grid>
             :
-                <div>
+                <Grid container direction="column" alignItems="center">
                     {chapter.images.map((image, index) => (
-                        console.log(chapter),
-                        <div>
-                            <img src={image} />
-                        </div>
+                        <img src={image} alt={"Chapters of Book"} style={{maxWidth: '100%'}}/>
                     ))}
-                </div>
+                </Grid>
             }
         </>
     );

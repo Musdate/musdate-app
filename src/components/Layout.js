@@ -1,22 +1,30 @@
 import React from 'react';
+import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 import Footer from './Footer';
 import NavBar from './NavBar';
 
-const DivContent = styled.div`
+const DivContainer = styled(Grid)`
     background: #EAEDED;
+`
+const DivBody = styled.div`
+    margin: auto;
     min-height: calc(100vh - 150px);
+    width: clamp(320px, 1500px, 100% - 60px);
+    @media (max-width: 768px) {
+        width: clamp(320px, 1500px, 100% - 20px);
+    }
 `
 
 function Layout(props) {
     return (
-        <div id="Layout">
+        <DivContainer container id="Layout" justifyContent="center" direction="column">
             <NavBar />
-            <DivContent id="page-container">
+            <DivBody id="page-container">
                 {props.children}
-            </DivContent>
+            </DivBody>
             <Footer />
-        </div>
+        </DivContainer>
     );
 }
 
