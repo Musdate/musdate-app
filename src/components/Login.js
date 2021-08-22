@@ -1,36 +1,38 @@
 import React, { useRef, useState } from 'react';
-import { Col, Grid, Row } from 'react-flexbox-grid';
 import { useHistory } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
+import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../.images/FantasyForest.png'
 import styled from 'styled-components'
 import 'firebase/auth';
 
+const Backimage = styled(Grid)`
+    height: 100vh;
+    background-image: url(${backgroundImage}), linear-gradient(to right, #23182d 0%, #493557 50%, #595478 75%, #2e1f33 100%);
+    background-size: cover;
+`
 const GridSession = styled(Grid)`
     height: 400px;
-    max-height: max-content;
-    width: 350px;
-    background-image: linear-gradient(to bottom right, #764c9b, #1d172b);
-    15px 15px 25px 10px #00000080;
+    width: clamp(300px, 350px, (100% - 20px));
+    min-width: 300px;
+    background: linear-gradient(to bottom right, #764c9b, #1d172b);
     color: #e6e4d6;
     border-radius: 15px;
-    @media (max-width: 575px) {
-        width: 300px;
-    }
+`
+const RowActions = styled(Grid)`
+    height: 60px;
 `
 const InputSession = styled.input`
-    width: 100%;
     height: 35px;
     color: white;
     background: #7c69a845;
     border: none;
     outline: none;
     margin-top: 10px;
-    padding-left: 10px;
+    padding: 0px 10px;
 `
 const ButtonSession = styled.button`
-    width: 100%;
     height: 40px;
     background: #6f3eaa;
     border: none;
@@ -46,23 +48,16 @@ const ButtonSession = styled.button`
         background: #6a63735e;
     }
 `
-const Backimage = styled.div`
-    height: 100vh;
-    background-image: url(${backgroundImage}), linear-gradient(to right, #23182d 0%, #493557 50%, #595478 75%, #2e1f33 100%);
-    background-size: cover;
-    display: flex;
-    align-items: center;
-`
-const ButtonIngresar = styled(Col)`
+const ButtonIngresar = styled(Grid)`
     font-size: ${props => props.isClicked === "ingresar" ? "27px" : "25px"};
     color: ${props => props.isClicked === "ingresar" ? "#ff0" : "#eaea5f"};
     cursor: pointer;
-    &:hover {
+        &:hover {
         font-size: 27px;
         color: #ff0;
     }
 `
-const ButtonRegistrarse = styled(Col)`
+const ButtonRegistrarse = styled(Grid)`
     font-size: ${props => props.isClicked === "registrarse" ? "27px" : "25px"};
     color:${props => props.isClicked === "registrarse" ? "#ff0" : "#eaea5f"};
     cursor: pointer;
@@ -71,23 +66,22 @@ const ButtonRegistrarse = styled(Col)`
         color: #ff0;
     }
 `
-const RowActions = styled(Row)`
-    padding: 10px 0px;
-    height: 60px;
-`
-const DivContent = styled.div`
+const DivContent = styled(Grid)`
     padding: 15px 34px;
 `
 const ErrorMsg = styled.p`
     color: #c6384c;
-    margin: ${props => props.header ? '0px;' : '5px 0px 15px 10px;'}
+    font-size: 14px;
+    margin: ${props => props.header ? '0px;' : '5px 0px 10px 10px;'}
 `
 const FooterLink = styled(Link)`
     color: #eaea5f;
     line-height: 35px;
     text-decoration: none;
+    width: max-content;
     &:hover {
         color: #ff0;
+        text-decoration: underline;
     }
 `
 
@@ -156,93 +150,78 @@ function Auth(props) {
     }
 
     return (
-        <Backimage>
+        <Backimage container justifyContent="center" alignItems="center">
             <GridSession>
-                <div>
-                    <RowActions around="xs">
-                        <ButtonRegistrarse
-                            isClicked={handleStyle}
-                            onClick={() => {
-                                setHasAccount(false)
-                                setHandleStyle("registrarse")
-                                setEmailError("")
-                                setPasswordError("")
-                                setLoading(false)
-                            }}
-                        >
-                            Registrarse
-                        </ButtonRegistrarse>
-                        <ButtonIngresar
-                            isClicked={handleStyle}
-                            onClick={() => {
-                                setHasAccount(true)
-                                setHandleStyle("ingresar")
-                                setEmailError("")
-                                setPasswordError("")
-                                setLoading(false)
-                            }}
-                        >
-                            Ingresar
-                        </ButtonIngresar>
-                    </RowActions>
-                    {error &&
-                        <Row center="xs">
-                            <ErrorMsg header>{error}</ErrorMsg>
-                        </Row>
-                    }
-                </div>
-                <DivContent>
-                    <Row>
-                        <label htmlFor="email">Correo electrónico</label>
-                    </Row>
-                    <Row>
-                        <InputSession
-                            type="email"
-                            id="email"
-                            ref={emailRef}
-                            onKeyDown={(e) => handleSearch(e)}
-                            onChange={() => {
-                                setLoading(false)
-                                setEmailError("")
-                            }}
-                            required
-                        />
-                    </Row>
-                    <Row>
-                        <ErrorMsg>{emailError}</ErrorMsg>
-                    </Row>
-                    <Row>
-                        <label htmlFor="password">Contraseña</label>
-                    </Row>
-                    <Row>
-                        <InputSession
-                            type="password"
-                            id="password"
-                            ref={passwordRef}
-                            onKeyDown={(e) => handleSearch(e)}
-                            onChange={() => {
-                                setLoading(false)
-                                setPasswordError("")
-                            }}
-                            required
-                        />
-                    </Row>
-                    <Row>
-                        <ErrorMsg>{passwordError}</ErrorMsg>
-                    </Row>
+                <RowActions
+                    container
+                    alignItems="center"
+                    justifyContent="space-around"
+                    direction="row"
+                >
+                    <ButtonRegistrarse
+                        isClicked={handleStyle}
+                        onClick={() => {
+                            setHasAccount(false)
+                            setHandleStyle("registrarse")
+                            setEmailError("")
+                            setPasswordError("")
+                            setLoading(false)
+                        }}
+                    >
+                        Registrarse
+                    </ButtonRegistrarse>
+                    <ButtonIngresar
+                        isClicked={handleStyle}
+                        onClick={() => {
+                            setHasAccount(true)
+                            setHandleStyle("ingresar")
+                            setEmailError("")
+                            setPasswordError("")
+                            setLoading(false)
+                        }}
+                    >
+                        Ingresar
+                    </ButtonIngresar>
+                </RowActions>
+                {error &&
+                    <Grid container justifyContent="center">
+                        <ErrorMsg header>{error}</ErrorMsg>
+                    </Grid>
+                }
+                <DivContent container direction="column">
+                    <label htmlFor="email">Correo electrónico</label>
+                    <InputSession
+                        type="email"
+                        id="email"
+                        ref={emailRef}
+                        onKeyDown={(e) => handleSearch(e)}
+                        onChange={() => {
+                            setLoading(false)
+                            setEmailError("")
+                        }}
+                        required
+                    />
+                    <ErrorMsg>{emailError}</ErrorMsg>
+                    <label htmlFor="password">Contraseña</label>
+                    <InputSession
+                        type="password"
+                        id="password"
+                        ref={passwordRef}
+                        onKeyDown={(e) => handleSearch(e)}
+                        onChange={() => {
+                            setLoading(false)
+                            setPasswordError("")
+                        }}
+                        required
+                    />
+                    <ErrorMsg>{passwordError}</ErrorMsg>
                     {hasAccount ?
                         <>
-                            <Row>
-                                <ButtonSession disabled={loading} onClick={handleLogin}>Ingresar</ButtonSession>
-                            </Row>
-                            <Row end="xs">
-                                <FooterLink to="/reset-password">Olvidaste tu contraseña?</FooterLink>
-                            </Row>
+                            <ButtonSession disabled={loading} onClick={handleLogin}>Ingresar</ButtonSession>
+                            <FooterLink to="/password/reset">Olvidaste tu contraseña?</FooterLink>
                         </>
                     :
-                        <Row>
-                            <ButtonSession disabled={loading} onClick={handleSingUp}>Crear cuenta</ButtonSession>
-                        </Row>
+                        <ButtonSession disabled={loading} onClick={handleSingUp}>Crear cuenta</ButtonSession>
                     }
                 </DivContent>
             </GridSession>
