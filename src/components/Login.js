@@ -168,7 +168,7 @@ function Auth(props) {
                             setLoading(false)
                         }}
                     >
-                        Registrarse
+                        Registrarseieie
                     </ButtonRegistrarse>
                     <ButtonIngresar
                         isClicked={handleStyle}
