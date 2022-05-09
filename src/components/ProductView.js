@@ -4,6 +4,7 @@ import { Grid } from '@material-ui/core';
 import { db } from '../firebase';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import styled from 'styled-components';
+import Loading from './Loading';
 
 const Image = styled.img`
     max-width: 25%;
@@ -145,9 +146,7 @@ function ProductView(props) {
     return (
         <>
             {isLoading ?
-                <Grid style={{background: 'aquamarine', textAlign: 'center'}}>
-                    <h1>LOADING...</h1>
-                </Grid>
+                <Loading />
             :
                 <>
                     <InfoSection container direction="row">
