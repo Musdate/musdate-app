@@ -31,9 +31,7 @@ function Chapter(props) {
     return (
         <>
             {isLoading ?
-                <Grid container alignItems="center" style={{background: 'aquamarine', textAlign: 'center'}}>
-                    <h1>LOADING...</h1>
-                </Grid>
+                <Loading />
             :
                 <Grid container direction="column" alignItems="center">
                     {chapter.images.map((image, index) => (

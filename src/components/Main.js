@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 import styled from 'styled-components';
+import Loading from './Loading';
 
 const GridContainer = styled(Grid)`
     max-width: 1500px;
@@ -189,9 +190,7 @@ function Main(props) {
     return (
         <GridContainer id="GridContainer" container>
             {isLoading ?
-                <Grid style={{background: 'aquamarine', textAlign: 'center'}}>
-                    <h1>LOADING...</h1>
-                </Grid>
+                <Loading />
             :
                 <>
                     <SelectorContainer container direction="row" justifyContent="space-around">
