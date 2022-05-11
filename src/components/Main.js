@@ -169,7 +169,7 @@ function Main(props) {
     const [ mangas, setMangas ] = useState([])
     const [ error, setError ] = useState('')
     const [ isLoading, setIsLoading ] = useState(true);
-    
+
     async function getMangas(){
         const pageReq = await fetch('https://api.mangadex.org/manga?limit=5')
         .catch(error => {
