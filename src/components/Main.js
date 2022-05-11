@@ -82,16 +82,16 @@ const BottomBox = styled.div`
     color: white;
     background-color:
     ${props =>
-        props.demoColor === 'Seinen' && `rgba(166, 12, 12, 0.74);`
+        props.demoColor === 'seinen' && `rgba(166, 12, 12, 0.74);`
     }
     ${props =>
-        props.demoColor === 'Shoujo' && `rgba(206, 117, 192, 0.74);`
+        props.demoColor === 'shoujo' && `rgba(206, 117, 192, 0.74);`
     }
     ${props =>
-        props.demoColor === 'Shounen' && `rgba(223, 130, 30, 0.74);`
+        props.demoColor === 'shounen' && `rgba(223, 130, 30, 0.74);`
     }
     ${props =>
-        props.demoColor === 'Josei' && `rgba(113, 11, 159, 0.74);`
+        props.demoColor === 'josei' && `rgba(113, 11, 159, 0.74);`
     }
     width: 100%;
     bottom: 0px;
@@ -143,48 +143,49 @@ const Box = (props) => {
     );
 }
 
-const getMangas = async (setMangas, catState, setRandomMangas, setError, setIsLoading) => {
-    await db.collection(catState.toLowerCase())
-        //.where('rating', '>', '8.5')
-        .get()
-        .then(querySnapshot => {
-            const mangas = []
-            querySnapshot.forEach(doc => {
-                mangas.push({...doc.data()})
-            });
-            setMangas(mangas);
-            setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)));
-            setIsLoading(false)
-        })
-        .catch(error => {
-            setError(error.message)
-            setIsLoading(false)
-        });
-}
-
-// function getRandom(arr, n) {
-//     var result = new Array(n),
-//         len = arr.length,
-//         taken = new Array(len);
-//     if (n > len)
-//         throw new RangeError("getRandom: more elements taken than available");
-//     while (n--) {
-//         var x = Math.floor(Math.random() * len);
-//         result[n] = arr[x in taken ? taken[x] : x];
-//         taken[x] = --len in taken ? taken[len] : len;
-//     }
-//     return result;
+// const getMangas = async (setMangas, catState, setRandomMangas, setError, setIsLoading) => {
+//     await db.collection(catState.toLowerCase())
+//         //.where('rating', '>', '8.5')
+//         .get()
+//         .then(querySnapshot => {
+//             const mangas = []
+//             querySnapshot.forEach(doc => {
+//                 mangas.push({...doc.data()})
+//             });
+//             setMangas(mangas);
+//             setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)));
+//             setIsLoading(false)
+//         })
+//         .catch(error => {
+//             setError(error.message)
+//             setIsLoading(false)
+//         });
 // }
+
+//MANGADEX API
 
 function Main(props) {
     const [ catState, setCatState ] = useState('MANGA')
     const [ mangas, setMangas ] = useState([])
-    const [ randomMangas, setRandomMangas ] = useState([])
-    const [ error, setError ] = useState()
+    const [ error, setError ] = useState('')
     const [ isLoading, setIsLoading ] = useState(true);
+    
+    async function getMangas(){
+        const pageReq = await fetch('https://api.mangadex.org/manga?limit=5')
+        .catch(error => {
+            setError(error.message);
+            setIsLoading(false);
+        });
+        await pageReq.json()
+        .then(data => {
+            setMangas(data.data);
+            console.log(data.data);
+            setIsLoading(false);
+        });
+    }
 
     useEffect(() => {
-        getMangas(setMangas, catState, setRandomMangas, setError, setIsLoading);
+        getMangas();
     }, [catState]);
 
     return (
@@ -206,25 +207,25 @@ function Main(props) {
                         </Grid>
                     }
                     <Grid container justifyContent="space-between">
-                        {randomMangas.map((p, index) => (
+                        {mangas.map((p, index) => (
                             <Box
                                 key={index}
-                                title={p.title}
-                                image={p.image}
-                                demography={p.demography}
-                                category={p.category}
-                                productId={p.productId}
-                                rating={p.rating}
+                                title={p.attributes.title.en}
+                                image={p}
+                                demography={p.attributes.publicationDemographic}
+                                category={p.type}
+                                productId={p.id}
+                                rating={0}
                             />
                         ))}
                     </Grid>
-                    <button
-                        style={{margin: '10px 0px 30px 5px'}}
+                    {/* <button
+                        style={{margin: '10px 0px 30px 5px', height: '40px'}}
                         onClick={() => setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)))}
                         disabled={error}
                     >
                         Actualizar
-                    </button>
+                    </button> */}
                 </>
             }
         </GridContainer>
