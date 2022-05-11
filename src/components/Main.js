@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 import styled from 'styled-components';
 import Loading from './Loading';
