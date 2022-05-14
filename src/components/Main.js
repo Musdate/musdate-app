@@ -155,7 +155,9 @@ async function getMangas(props){
         setIsLoading
     } = props
 
-    const pageReq = await fetch('https://api.mangadex.org/manga?includes[]=cover_art&limit=12')
+    const headers = {headers: {'Content-Type': 'application/json'}}
+
+    const pageReq = await fetch('https://api.mangadex.org/manga?includes[]=cover_art&limit=12', headers)
     .catch(error => {
         setError(error.message);
         setIsLoading(false);
