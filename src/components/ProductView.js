@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
-import { db } from '../firebase';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import styled from 'styled-components';
 import Loading from './Loading';
+import DefaultImage from '../.images/DefaultImage.png'
 
 const Image = styled.img`
     max-width: 25%;
@@ -22,7 +22,7 @@ const ChapterRow = styled(Grid)`
     font-size: 24px;
     padding: 0px 15px;
     color: #1d4b5e;
-    ${props => props.isEnd &&
+    ${props => props.end &&
         `background: #1d4b5e;
         color: white;
         font-size: 17px;
@@ -59,61 +59,61 @@ const LabelInfo = styled.div`
     font-weight: 600;
     font-size: 22px;
 `
+const GridContainer = styled(Grid)`
+    max-width: 1500px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: calc(100vh - 150px);
+`
 
-const getMangas = async (props) => {
+async function getManga(props){
     const {
-        category,
         productId,
         setManga,
-        setIsLoading,
-        setChapters,
-        setSliceChapters,
-        setScans
+        setIsLoading
     } = props
 
-    await db.collection(category)
-        .where('productId', '==', productId)
-        .get()
-        .then(mangaDoc => {
-            setManga(mangaDoc.docs[0].data())
+    const pageReq = await fetch(`https://api.mangadex.org/manga/${productId}?includes[]=cover_art`)
+    .catch(error => {
+        //setError(error.message);
+        setIsLoading(false);
+    });
+    await pageReq.json()
+    .then(mangasData => {
+        setManga(mangasData.data);
+        setIsLoading(false);
+    })
+    .catch(error => {
+        //setError(error.message);
+        setIsLoading(false);
+    });
 
-            db.collection(`${category}_chapters`)
-                .where('productId', '==', productId)
-                .orderBy('index')
-                .get()
-                .then(snapshotDoc => {
-                    const chapters = []
-                    snapshotDoc.forEach(chapterDoc => {
-                        chapters.push({id: chapterDoc.id, ...chapterDoc.data()})
+    // db.collection(`${category}_chapters`)
+    //     .where('productId', '==', productId)
+    //     .orderBy('index')
+    //     .get()
+    //     .then(snapshotDoc => {
+    //         const chapters = []
+    //         snapshotDoc.forEach(chapterDoc => {
+    //             chapters.push({id: chapterDoc.id, ...chapterDoc.data()})
 
-                        db.collection(`${category}_chapters`)
-                            .doc(chapterDoc.id)
-                            .collection('scans')
-                            .get()
-                            .then(scanDoc => {
-                                const scansChaps = []
-                                scanDoc.forEach(doc => {
-                                    scansChaps.push({id: doc.id, ...doc.data()})
-                                })
-                                setScans(scansChaps)
-                                setIsLoading(false)
-                            });
-
-
-                    });
-                    setChapters(chapters)
-                    setSliceChapters(chapters.slice(0, 10))
-                });
-        });
+    //             db.collection(`${category}_chapters`)
+    //                 .doc(chapterDoc.id)
+    //                 .collection('scans')
+    //                 .get()
+    //                 .then(scanDoc => {
+    //                     const scansChaps = []
+    //                     scanDoc.forEach(doc => {
+    //                         scansChaps.push({id: doc.id, ...doc.data()})
+    //                     })
+    //                     setScans(scansChaps)
+    //                     setIsLoading(false)
+    //                 });
+    //         });
+    //         setChapters(chapters)
+    //         setSliceChapters(chapters.slice(0, 10))
+    //     });
 }
-
-/*
-<Link style={{textDecoration: 'none'}} to={`/${category}/${productId}/${chap.id}`}>
-    <ChapterRow>
-        {chap.name}
-    </ChapterRow>
-</Link>
-*/
 
 function ProductView(props) {
     const { productId, category } = useParams();
@@ -123,13 +123,21 @@ function ProductView(props) {
     const [ sliceChapters, setSliceChapters ] = useState([]);
     const [ seeAll, setSeeAll ] = useState(false)
     const [ scans, setScans ] = useState()
+    let imageUrl = DefaultImage
+
+    // Search Manga Image
+    if(manga){
+        const imageData = manga.relationships.find((relation) => relation.type === "cover_art")
+        if(imageData){
+            imageUrl = `https://uploads.mangadex.org/covers/${productId}/${imageData.attributes.fileName}.512.jpg`
+        }
+    }
 
     useEffect(() => {
         setIsLoading(true)
-        getMangas({category, productId, setManga, setIsLoading, setChapters, setSliceChapters, setScans});
+        getManga({category, productId, setManga, setIsLoading, setChapters, setSliceChapters, setScans});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
 
     function handleSeeAll(validator) {
         validator ?
@@ -139,33 +147,39 @@ function ProductView(props) {
         setSeeAll(validator)
     }
 
-    // function handleChapter(validator) {
-    //     //Function Here
-    // }
-
     return (
-        <>
+        <GridContainer id="GridContainer" container>
             {isLoading ?
                 <Loading />
             :
                 <>
                     <InfoSection container direction="row">
-                        <Image src={manga.image} alt={"Book Portrait"} />
+                        <Image src={imageUrl} alt={"Book Portrait"} />
                         <DetailSection>
-                            <TextInfo title={true}>{manga.title}</TextInfo>
-                            <TextInfo>{manga.description}</TextInfo>
+                            <TextInfo title='true'>{manga.attributes.title.en}</TextInfo>
+                            <TextInfo>{manga.attributes.description.en}</TextInfo>
                             <LabelInfo>Géneros</LabelInfo>
                             <Grid container direction="row">
-                                {manga.genres.map((gen, index) => (
-                                    <TextInfo genres={true}>{gen}</TextInfo>
+                                {manga.attributes.tags.map((gen, index) => (
+                                    <TextInfo
+                                        key={index}
+                                        genres='true'
+                                    >
+                                        {gen.attributes.name.en}
+                                    </TextInfo>
                                 ))}
                             </Grid>
                             <LabelInfo>Estado</LabelInfo>
-                            <TextInfo>{manga.status}</TextInfo>
+                            <TextInfo>{manga.attributes.status}</TextInfo>
                             <LabelInfo>Títulos Alternativos</LabelInfo>
                             <Grid container direction="row">
-                                {manga.alt_title.map((alt, index) => (
-                                    <TextInfo alt={true}>{alt}</TextInfo>
+                                {manga.attributes.altTitles.map((alt, index) => (
+                                    <TextInfo
+                                        key={index}
+                                        alt='true'
+                                    >
+                                        {Object.values(alt)}
+                                    </TextInfo>
                                 ))}
                             </Grid>
                         </DetailSection>
@@ -176,7 +190,7 @@ function ProductView(props) {
                         direction="column"
                     >
                         <ChapterContainer>
-                        <TextInfo title={true}>SECCION DE CAPITULOS:</TextInfo>
+                        <TextInfo title='true'>SECCION DE CAPITULOS:</TextInfo>
                             {sliceChapters.map((chap, index) => (
                                 <Link style={{textDecoration: 'none'}} to={`/${category}/${chap.id}/${scans[0].id}/page=${chap.index}`}>
                                     <ChapterRow
@@ -193,7 +207,7 @@ function ProductView(props) {
                                 container
                                 justifyContent="center"
                                 alignItems="center"
-                                isEnd={true}
+                                end='true'
                                 onClick={() => handleSeeAll(!seeAll)}
                             >
                                 Ver Todo
@@ -202,7 +216,7 @@ function ProductView(props) {
                     </Grid>
                 </>
             }
-        </>
+        </GridContainer>
     );
 }
 

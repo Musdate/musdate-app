@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 import styled from 'styled-components';
 import Loading from './Loading';
+import DefaultImage from '../.images/DefaultImage.png'
 
 const GridContainer = styled(Grid)`
     max-width: 1500px;
@@ -114,12 +115,17 @@ const SelectorContainer = styled(Grid)`
 const Box = (props) => {
     const {
         title,
-        image,
+        imageData,
         demography,
         category,
         productId,
         rating
     } = props
+
+    let ImageUrl = DefaultImage
+    if(imageData){
+        ImageUrl = `https://uploads.mangadex.org/covers/${productId}/${imageData.attributes.fileName}.512.jpg`
+    }
 
     return(
         <Link to={`/${category.toLowerCase()}/${productId}`}>
@@ -133,35 +139,37 @@ const Box = (props) => {
                         {rating}
                     </RatingBox>
                 </TopBox>
-                <GridBox image={image} />
-                <BottomBox demoColor={demography}>
-                    {demography}
+                <GridBox image={ImageUrl} />
+                <BottomBox demoColor={demography ? demography : 'shounen'}>
+                    {demography ? demography.charAt(0).toUpperCase() + demography.slice(1) : 'none'}
                 </BottomBox>
             </ContainerBox>
         </Link>
     );
 }
 
-// const getMangas = async (setMangas, catState, setRandomMangas, setError, setIsLoading) => {
-//     await db.collection(catState.toLowerCase())
-//         //.where('rating', '>', '8.5')
-//         .get()
-//         .then(querySnapshot => {
-//             const mangas = []
-//             querySnapshot.forEach(doc => {
-//                 mangas.push({...doc.data()})
-//             });
-//             setMangas(mangas);
-//             setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)));
-//             setIsLoading(false)
-//         })
-//         .catch(error => {
-//             setError(error.message)
-//             setIsLoading(false)
-//         });
-// }
+async function getMangas(props){
+    const {
+        setMangas,
+        setError,
+        setIsLoading
+    } = props
 
-//MANGADEX API
+    const pageReq = await fetch('https://api.mangadex.org/manga?includes[]=cover_art&limit=12')
+    .catch(error => {
+        setError(error.message);
+        setIsLoading(false);
+    });
+    await pageReq.json()
+    .then(mangasData => {
+        setMangas(mangasData.data);
+        setIsLoading(false);
+    })
+    .catch(error => {
+        setError(error.message);
+        setIsLoading(false);
+    });
+}
 
 function Main(props) {
     const [ catState, setCatState ] = useState('MANGA')
@@ -169,22 +177,8 @@ function Main(props) {
     const [ error, setError ] = useState('')
     const [ isLoading, setIsLoading ] = useState(true);
 
-    async function getMangas(){
-        const pageReq = await fetch('https://api.mangadex.org/manga?limit=5')
-        .catch(error => {
-            setError(error.message);
-            setIsLoading(false);
-        });
-        await pageReq.json()
-        .then(data => {
-            setMangas(data.data);
-            console.log(data.data);
-            setIsLoading(false);
-        });
-    }
-
     useEffect(() => {
-        getMangas();
+        getMangas({setMangas, catState, setError, setIsLoading});
     }, [catState]);
 
     return (
@@ -194,7 +188,7 @@ function Main(props) {
             :
                 <>
                     <SelectorContainer container direction="row" justifyContent="space-around">
-                        <TitleCat item xs selected={catState === 'MANGA' && 'grey'}onClick={() => {setCatState('MANGA')}}>Mangas</TitleCat>
+                        <TitleCat item xs selected={catState === 'MANGA' && 'grey'} onClick={() => {setCatState('MANGA')}}>Mangas</TitleCat>
                         <TitleCat item xs selected={catState === 'MANHUA' && 'grey'} onClick={() => {setCatState('MANHUA')}}>Manhua</TitleCat>
                         <TitleCat item xs selected={catState === 'MANHWA' && 'grey'} onClick={() => {setCatState('MANHWA')}}>Manhwa</TitleCat>
                     </SelectorContainer>
@@ -209,8 +203,8 @@ function Main(props) {
                         {mangas.map((p, index) => (
                             <Box
                                 key={index}
+                                imageData={p.relationships.find((relation) => relation.type === "cover_art")}
                                 title={p.attributes.title.en}
-                                image={p}
                                 demography={p.attributes.publicationDemographic}
                                 category={p.type}
                                 productId={p.id}
@@ -218,13 +212,6 @@ function Main(props) {
                             />
                         ))}
                     </Grid>
-                    {/* <button
-                        style={{margin: '10px 0px 30px 5px', height: '40px'}}
-                        onClick={() => setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)))}
-                        disabled={error}
-                    >
-                        Actualizar
-                    </button> */}
                 </>
             }
         </GridContainer>
