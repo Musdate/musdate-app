@@ -158,7 +158,7 @@ async function getMangas(props){
     const options = {
         'mode': 'cors',
         'headers': {
-            'Access-Control-Allow-Origin': 'https://api.mangadex.org',
+            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json'
         }
     };
