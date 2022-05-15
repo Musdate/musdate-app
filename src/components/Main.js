@@ -155,15 +155,7 @@ async function getMangas(props){
         setIsLoading
     } = props
 
-    const options = {
-        'mode': 'cors',
-        'headers': {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json'
-        }
-    };
-
-    const pageReq = await fetch('https://api.mangadex.org/manga?includes[]=cover_art&limit=12', options)
+    const pageReq = await fetch('https://api.mangadex.org/manga?includes[]=cover_art&limit=12', {mode: 'cors', credentials: 'include'})
     .catch(error => {
         setError(error.message);
         setIsLoading(false);
