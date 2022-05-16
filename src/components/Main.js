@@ -155,7 +155,7 @@ async function getMangas(props){
         setIsLoading
     } = props
 
-    const pageReq = await fetch('https://api.mangadex.org/manga?includes[]=cover_art&limit=12', {mode: 'cors', credentials: 'include'})
+    const pageReq = await fetch('https://us-central1-musdate-react-app.cloudfunctions.net/corsEnabled')
     .catch(error => {
         setError(error.message);
         setIsLoading(false);
