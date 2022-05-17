@@ -3,7 +3,7 @@ import ResetPassword from './components/ResetPassword';
 import UpdateProfile from './components/UpdateProfile';
 import PrivateRoute from './components/PrivateRoute';
 import PageNotFound from "./components/PageNotFound";
-import ProductView from "./components/ProductView";
+import ProductView from "./components/MangaDetail/index";
 import Chapter from "./components/Chapter";
 import Login from './components/Login';
 import Main from './components/Main';

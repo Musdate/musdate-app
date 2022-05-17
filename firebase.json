@@ -8,8 +8,8 @@
     ],
     "rewrites": [
       {
-        "source": "/corsEnabled/**",
-        "function": "corsEnabled"
+        "source": "/api/**",
+        "function": "api"
       },
       {
         "source": "**",

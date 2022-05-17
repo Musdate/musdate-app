@@ -155,7 +155,7 @@ async function getMangas(props){
         setIsLoading
     } = props
 
-    const pageReq = await fetch('https://us-central1-musdate-react-app.cloudfunctions.net/corsEnabled')
+    const pageReq = await fetch('https://us-central1-musdate-react-app.cloudfunctions.net/api')
     .catch(error => {
         setError(error.message);
         setIsLoading(false);
