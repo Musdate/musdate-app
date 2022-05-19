@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import { GridContainer } from './Globals/Grid';
 
-const DivNavBar = styled(Grid)`
+const DivNavBar = styled(GridContainer)`
     background: #527c8d;
     height: 75px;
     padding: 0px 35px;
+    margin-bottom: 5px;
     font-size: clamp(20px, 2vw, 30px);
     box-shadow:
         rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
@@ -100,8 +101,10 @@ function NavBar(props) {
     }, [stateDropDown])
 
     return (
-        <DivNavBar container id="NavBar" direction="row" justifyContent="space-between" alignItems="center">
+        <DivNavBar id="NavBar" justifyContent="space-between" alignItems="center">
             <InicioButton to="/">Inicio</InicioButton>
+            <InicioButton to="/">Mangas</InicioButton>
+            <InicioButton to="/movies">Peliculas</InicioButton>
             <DropDown ref={ref} onClick={() => setStateDropDown(!stateDropDown)} id="DropDown">
                 <DropDownPeak isOpen={stateDropDown} />
                 <DropDownContent isOpen={stateDropDown} id="DropDownContent">

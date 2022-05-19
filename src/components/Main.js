@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import { GridContainer, GridItem } from './Globals/Grid';
 import { Link } from 'react-router-dom';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
-import styled from 'styled-components';
-import Loading from './Loading';
 import DefaultImage from '../.images/DefaultImage.png'
+import Loading from './Globals/Loading';
+import styled from 'styled-components';
+import Error from './Globals/Error';
 
-const GridContainer = styled(Grid)`
-    max-width: 1500px;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: calc(100vh - 150px);
-`
-const GridBox = styled(Grid)`
+const GridBox = styled(GridContainer)`
     width: 225px;
     height: 325px;
     background-image: url(${props => props.image});
@@ -39,7 +34,7 @@ const GridBox = styled(Grid)`
         height: 250px;
     }
 `
-const TitleCat = styled(Grid)`
+const TitleCat = styled(GridItem)`
     text-align: center;
     cursor: pointer;
     height: 50px;
@@ -50,16 +45,14 @@ const TitleCat = styled(Grid)`
     display: block;
     font-size: clamp(20px, 2vw, 30px);
     font-weight: bold;
-    width: 33%;
 `
 const ContainerBox = styled.div`
     position: relative;
     margin: 5px 5px;
 `
-const TopBox = styled(Grid)`
+const TopBox = styled(GridContainer)`
     position: absolute;
     color: white;
-    width: 100%;
     font-size: 14px;
     font-weight: 600;
     text-align: center;
@@ -98,7 +91,7 @@ const BottomBox = styled.div`
     min-height: 35px;
     line-height: 30px;
 `
-const RatingBox = styled(Grid)`
+const RatingBox = styled(GridContainer)`
     background-color: rgba(0,0,0,.6);
     min-height: 20px;
     max-width: max-content;
@@ -108,8 +101,8 @@ const RatingBox = styled(Grid)`
 const StarRate = styled(StarRateRoundedIcon)`
     color: #ffdc5e;
 `
-const SelectorContainer = styled(Grid)`
-    margin: 15px 5px 5px 5px;
+const SelectorContainer = styled(GridContainer)`
+    margin: 5px;
 `
 
 const Box = (props) => {
@@ -130,11 +123,11 @@ const Box = (props) => {
     return(
         <Link to={`/${category.toLowerCase()}/${productId}`}>
             <ContainerBox id="ContainerBox">
-                <TopBox container direction="column" alignItems="flex-end">
+                <TopBox direction="column" alignItems="flex-end">
                     <TitleBox>
                         {title}
                     </TitleBox>
-                    <RatingBox container direction="row" alignItems="center">
+                    <RatingBox direction="row" alignItems="center">
                         <StarRate />
                         {rating}
                     </RatingBox>
@@ -182,24 +175,20 @@ function Main(props) {
     }, [catState]);
 
     return (
-        <GridContainer id="GridContainer" container>
+        <>
             {isLoading ?
                 <Loading />
             :
                 <>
-                    <SelectorContainer container direction="row" justifyContent="space-around">
-                        <TitleCat item xs selected={catState === 'MANGA' && 'grey'} onClick={() => {setCatState('MANGA')}}>Mangas</TitleCat>
-                        <TitleCat item xs selected={catState === 'MANHUA' && 'grey'} onClick={() => {setCatState('MANHUA')}}>Manhua</TitleCat>
-                        <TitleCat item xs selected={catState === 'MANHWA' && 'grey'} onClick={() => {setCatState('MANHWA')}}>Manhwa</TitleCat>
+                    <SelectorContainer direction="row" justifyContent="space-around">
+                        <TitleCat selected={catState === 'MANGA' && 'grey'} onClick={() => {setCatState('MANGA')}}>Mangas</TitleCat>
+                        <TitleCat selected={catState === 'MANHUA' && 'grey'} onClick={() => {setCatState('MANHUA')}}>Manhua</TitleCat>
+                        <TitleCat selected={catState === 'MANHWA' && 'grey'} onClick={() => {setCatState('MANHWA')}}>Manhwa</TitleCat>
                     </SelectorContainer>
                     {error &&
-                        <Grid style={{background: 'lightcoral'}} container direction="column" justifyContent="center" alignContent="center">
-                            <h1>Houston, tenemos un problema:</h1>
-                            <p style={{fontFamily: 'cursive', textAlign: 'center'}}>{`"${error}"`}</p>
-                            <h3>{`...Problemas de tener una Base de datos gratuita :(`}</h3>
-                        </Grid>
+                        <Error error={error} />
                     }
-                    <Grid container justifyContent="space-between">
+                    <GridContainer justifyContent="space-between">
                         {mangas.map((p, index) => (
                             <Box
                                 key={index}
@@ -211,10 +200,10 @@ function Main(props) {
                                 rating={0}
                             />
                         ))}
-                    </Grid>
+                    </GridContainer>
                 </>
             }
-        </GridContainer>
+        </>
     );
 }
 

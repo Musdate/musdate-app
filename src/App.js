@@ -1,9 +1,10 @@
 import { AuthProvider } from "./contexts/AuthContext"
+import ProductView from "./components/MangaDetail/index";
 import ResetPassword from './components/ResetPassword';
 import UpdateProfile from './components/UpdateProfile';
 import PrivateRoute from './components/PrivateRoute';
 import PageNotFound from "./components/PageNotFound";
-import ProductView from "./components/MangaDetail/index";
+import Movies from './components/Movies/index';
 import Chapter from "./components/Chapter";
 import Login from './components/Login';
 import Main from './components/Main';
@@ -24,6 +25,7 @@ function App() {
                     <PrivateRoute exact path='/' component={Main} />
                     <PrivateRoute exact path='/:category/:productId' component={ProductView} />
                     <PrivateRoute exact path='/:category/:chapId/:scanId/page=:chapIndex' component={Chapter} />
+                    <PrivateRoute exact path='/movies' component={Movies} />
                     <Route component={PageNotFound} />
                 </Switch>
             </AuthProvider>

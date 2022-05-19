@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Grid } from '@material-ui/core';
 import DefaultImage from '../../.images/DefaultImage.png'
+import { GridContainer } from '../Globals/Grid';
 
 const Image = styled.img`
     width: 255px;
@@ -9,30 +9,30 @@ const Image = styled.img`
 `
 const TextInfo = styled.div`
     margin-bottom: 15px;
-    ${props => props.title &&
-        `font-weight: 600;
-        font-size: 30px;`
-    }
-    ${props => props.genres &&
+    ${props => props.$genres &&
         `margin-right: 15px;
         font-weight: 600;
         font-size: 17px;`
     }
-    ${props => props.alt &&
+    ${props => props.$altTitles &&
         `margin-right: 15px;
         font-size: 17px;`
     }
 `
-const DetailSection = styled(Grid)`
-    max-width: calc(100% - 315px);
-    padding: 0px 30px;
+const TitleInfo = styled.div`
+    font-weight: 600;
+    font-size: 30px;
 `
 const LabelInfo = styled.div`
     color: grey;
     font-weight: 600;
     font-size: 22px;
 `
-const GridContainer = styled(Grid)`
+const DetailSection = styled(GridContainer)`
+    max-width: calc(100% - 315px);
+    padding: 0px 30px;
+`
+const InfoContainer = styled(GridContainer)`
     padding: 30px;
 `
 
@@ -53,37 +53,37 @@ function InfoSection(props) {
     }
 
     return (
-        <GridContainer container direction="row">
+        <InfoContainer>
             <Image src={imageUrl} alt={"Book Portrait"} />
-            <DetailSection>
-                <TextInfo title='true'>{manga.attributes.title.en}</TextInfo>
+            <DetailSection direction='column'>
+                <TitleInfo>{manga.attributes.title.en}</TitleInfo>
                 <TextInfo>{manga.attributes.description.en}</TextInfo>
                 <LabelInfo>Géneros</LabelInfo>
-                <Grid container direction="row">
+                <GridContainer direction="row">
                     {manga.attributes.tags.map((gen, index) => (
                         <TextInfo
                             key={index}
-                            genres='true'
+                            $genres
                         >
                             {gen.attributes.name.en}
                         </TextInfo>
                     ))}
-                </Grid>
+                </GridContainer>
                 <LabelInfo>Estado</LabelInfo>
                 <TextInfo>{manga.attributes.status}</TextInfo>
                 <LabelInfo>Títulos Alternativos</LabelInfo>
-                <Grid container direction="row">
+                <GridContainer direction="row">
                     {manga.attributes.altTitles.map((alt, index) => (
                         <TextInfo
                             key={index}
-                            alt='true'
+                            $altTitles
                         >
                             {Object.values(alt)}
                         </TextInfo>
                     ))}
-                </Grid>
+                </GridContainer>
             </DetailSection>
-        </GridContainer>
+        </InfoContainer>
     );
 }
 

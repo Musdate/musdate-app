@@ -1,13 +1,13 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { GridContainer } from './Globals/Grid';
 import styled from 'styled-components';
 import Footer from './Footer';
 import NavBar from './NavBar';
 
-const DivContainer = styled(Grid)`
+const DivContainer = styled(GridContainer)`
     background: #EAEDED;
 `
-const DivBody = styled.div`
+const DivBody = styled(GridContainer)`
     margin: auto;
     min-height: calc(100vh - 150px);
     width: clamp(320px, 1500px, 100% - 60px);
@@ -18,7 +18,7 @@ const DivBody = styled.div`
 
 function Layout(props) {
     return (
-        <DivContainer container id="Layout" justifyContent="center" direction="column">
+        <DivContainer id="Layout" direction="column">
             <NavBar />
             <DivBody id="page-container">
                 {props.children}

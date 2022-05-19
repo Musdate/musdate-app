@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
-import styled from 'styled-components';
-import Loading from '../Loading';
-import Chapters from './Chapters';
+import Loading from '../Globals/Loading';
 import InfoSection from './InfoSection';
-import DefaultImage from '../../.images/DefaultImage.png'
-
-const GridContainer = styled(Grid)`
-    max-width: 1500px;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: calc(100vh - 150px);
-`
+import Chapters from './Chapters';
+import Error from '../Globals/Error';
 
 async function getManga(props){
     const {
         productId,
         setManga,
-        setIsLoading
+        setIsLoading,
+        setError
     } = props
 
     const pageReq = await fetch(`https://us-central1-musdate-react-app.cloudfunctions.net/api/detail/${productId}`)
     .catch(error => {
-        //setError(error.message);
+        setError(error.message);
         setIsLoading(false);
     });
     await pageReq.json()
@@ -32,57 +24,34 @@ async function getManga(props){
         setIsLoading(false);
     })
     .catch(error => {
-        //setError(error.message);
+        setError(error.message);
         setIsLoading(false);
     });
-
-    // db.collection(`${category}_chapters`)
-    //     .where('productId', '==', productId)
-    //     .orderBy('index')
-    //     .get()
-    //     .then(snapshotDoc => {
-    //         const chapters = []
-    //         snapshotDoc.forEach(chapterDoc => {
-    //             chapters.push({id: chapterDoc.id, ...chapterDoc.data()})
-
-    //             db.collection(`${category}_chapters`)
-    //                 .doc(chapterDoc.id)
-    //                 .collection('scans')
-    //                 .get()
-    //                 .then(scanDoc => {
-    //                     const scansChaps = []
-    //                     scanDoc.forEach(doc => {
-    //                         scansChaps.push({id: doc.id, ...doc.data()})
-    //                     })
-    //                     setScans(scansChaps)
-    //                     setIsLoading(false)
-    //                 });
-    //         });
-    //         setChapters(chapters)
-    //         setSliceChapters(chapters.slice(0, 10))
-    //     });
 }
 
 function ProductView(props) {
     const { productId, category } = useParams();
     const [ manga, setManga ] = useState();
-    const [ mangaImage, setMangaImage ] = useState(DefaultImage);
     const [ chapters, setChapters] = useState();
     const [ isLoading, setIsLoading ] = useState(true);
     const [ sliceChapters, setSliceChapters ] = useState([]);
+    const [ error, setError ] = useState('')
 
     useEffect(() => {
         setIsLoading(true)
-        getManga({productId, setManga, setIsLoading});
+        getManga({productId, setManga, setIsLoading, setError, setChapters});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <GridContainer id="GridContainer" container>
+        <>
             {isLoading ?
                 <Loading />
             :
                 <>
+                    {error &&
+                        <Error error={error} />
+                    }
                     <InfoSection
                         manga={manga}
                         productId={productId}
@@ -95,7 +64,7 @@ function ProductView(props) {
                     />
                 </>
             }
-        </GridContainer>
+        </>
     );
 }
 

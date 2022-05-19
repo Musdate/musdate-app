@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { GridContainer } from '../Globals/Grid';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Grid } from '@material-ui/core';
+import styled from 'styled-components';
 
 const ChapterContainer = styled.div`
     width: 100%;
     padding: 30px;
 `
-const ChapterRow = styled(Grid)`
+const ChapterRow = styled(GridContainer)`
     height: 50px;
     background: white;
     border: 1px solid #cdcfd6;
@@ -16,7 +16,7 @@ const ChapterRow = styled(Grid)`
     font-size: 24px;
     padding: 0px 15px;
     color: #1d4b5e;
-    ${props => props.end &&
+    ${props => props.$end &&
         `background: #1d4b5e;
         color: white;
         font-size: 17px;
@@ -45,23 +45,21 @@ const TextInfo = styled.div`
 function Chapters(props) {
     const {
         sliceChapters,
-        setSliceChapters,
-        category,
-        chapters
+        category
     } = props
 
-    const [ showAll, setShowAll ] = useState(false);
+    // const [ showAll, setShowAll ] = useState(false);
 
-    function handleShowAll(validator) {
-        validator ?
-            setSliceChapters(chapters)
-        :
-            setSliceChapters(chapters.slice(0, 10))
-            setShowAll(validator)
-    };
+    // function handleShowAll(validator) {
+    //     validator ?
+    //         setSliceChapters(chapters)
+    //     :
+    //         setSliceChapters(chapters.slice(0, 10))
+    //         setShowAll(validator)
+    // };
 
     return (
-        <Grid container
+        <GridContainer
             id="SectionContainer"
             alignItems="center"
             direction="column"
@@ -81,16 +79,15 @@ function Chapters(props) {
                     </Link>
                 ))}
                 <ChapterRow
-                    container
                     justifyContent="center"
                     alignItems="center"
-                    end='true'
-                    onClick={() => handleShowAll(!showAll)}
+                    $end
+                    // onClick={() => handleShowAll(!showAll)}
                 >
                     Ver Todo
                 </ChapterRow>
             </ChapterContainer>
-        </Grid>
+        </GridContainer>
     );
 }
 
