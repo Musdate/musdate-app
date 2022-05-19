@@ -1,17 +1,17 @@
 import React, { useRef, useState } from 'react';
+import { GridContainer, GridItem } from './Globals/Grid';
 import { useAuth } from '../contexts/AuthContext';
-import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../.images/FantasyForest.png'
 import styled from 'styled-components'
 import 'firebase/auth';
 
-const Backimage = styled(Grid)`
+const Backimage = styled(GridContainer)`
     height: 100vh;
     background-image: url(${backgroundImage}), linear-gradient(to right, #23182d 0%, #493557 50%, #595478 75%, #2e1f33 100%);
     background-size: cover;
 `
-const GridSession = styled(Grid)`
+const GridSession = styled(GridContainer)`
     height: 400px;
     width: clamp(300px, 350px, (100% - 20px));
     min-width: 300px;
@@ -19,7 +19,7 @@ const GridSession = styled(Grid)`
     color: #e6e4d6;
     border-radius: 15px;
 `
-const RowActions = styled(Grid)`
+const RowActions = styled(GridContainer)`
     height: 60px;
 `
 const InputSession = styled.input`
@@ -43,7 +43,7 @@ const ButtonSession = styled.button`
         background: radial-gradient(circle, rgb(110, 65, 170) 0%, rgb(100, 70, 135) 80%);
     }
 `
-const DivContent = styled(Grid)`
+const DivContent = styled(GridContainer)`
     padding: 15px 34px;
 `
 const ErrorMsg = styled.p`
@@ -51,8 +51,9 @@ const ErrorMsg = styled.p`
     font-size: 14px;
     margin: ${props => props.header ? '0px;' : '5px 0px 15px 10px;'}
 `
-const CardTitle = styled(Grid)`
+const CardTitle = styled(GridItem)`
     font-size: 25px;
+    text-align: center;
 `
 const FooterLink = styled(Link)`
     color: #eaea5f;
@@ -87,10 +88,9 @@ function ResetPassword(props) {
     }
 
     return (
-        <Backimage container justifyContent="center" alignItems="center">
-            <GridSession>
+        <Backimage justifyContent="center" alignItems="center">
+            <GridSession direction='column'>
                 <RowActions
-                    container
                     alignItems="center"
                     justifyContent="space-around"
                     direction="row"
@@ -100,16 +100,16 @@ function ResetPassword(props) {
                     </CardTitle>
                 </RowActions>
                 {message &&
-                    <Grid container justifyContent="center">
+                    <GridContainer justifyContent="center">
                         {message}
-                    </Grid>
+                    </GridContainer>
                 }
                 {error &&
-                    <Grid container justifyContent="center">
+                    <GridContainer justifyContent="center">
                         <ErrorMsg header>{error}</ErrorMsg>
-                    </Grid>
+                    </GridContainer>
                 }
-                <DivContent container direction="column">
+                <DivContent direction="column">
                     <label id="email">Correo electrónico</label>
                     <InputSession type="email" ref={emailRef} required />
                     <ButtonSession disabled={loading} onClick={handleSubmit}>Enviar</ButtonSession>

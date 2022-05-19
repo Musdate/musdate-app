@@ -1,5 +1,5 @@
 import React from 'react';
-import Loading from './Loading';
+import Loading from './Globals/Loading';
 
 function Chapter(props) {
     return (
