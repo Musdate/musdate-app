@@ -1,18 +1,18 @@
 import React, { useRef, useState } from 'react';
+import { GridContainer, GridItem } from './Globals/Grid';
 import { useHistory } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
-import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../.images/FantasyForest.png'
 import styled from 'styled-components'
 import 'firebase/auth';
 
-const Backimage = styled(Grid)`
+const Backimage = styled(GridContainer)`
     height: 100vh;
     background-image: url(${backgroundImage}), linear-gradient(to right, #23182d 0%, #493557 50%, #595478 75%, #2e1f33 100%);
     background-size: cover;
 `
-const GridSession = styled(Grid)`
+const GridSession = styled(GridContainer)`
     height: 400px;
     width: clamp(300px, 350px, (100% - 20px));
     min-width: 300px;
@@ -20,7 +20,7 @@ const GridSession = styled(Grid)`
     color: #e6e4d6;
     border-radius: 15px;
 `
-const RowActions = styled(Grid)`
+const RowActions = styled(GridContainer)`
     height: 60px;
 `
 const InputSession = styled.input`
@@ -48,31 +48,33 @@ const ButtonSession = styled.button`
         background: #6a63735e;
     }
 `
-const ButtonIngresar = styled(Grid)`
-    font-size: ${props => props.isClicked === "ingresar" ? "27px" : "25px"};
-    color: ${props => props.isClicked === "ingresar" ? "#ff0" : "#eaea5f"};
+const LoginButton = styled(GridItem)`
+    text-align: center;
+    font-size: ${props => props.$isClicked === "ingresar" ? "27px" : "25px"};
+    color: ${props => props.$isClicked === "ingresar" ? "#ff0" : "#eaea5f"};
     cursor: pointer;
         &:hover {
         font-size: 27px;
         color: #ff0;
     }
 `
-const ButtonRegistrarse = styled(Grid)`
-    font-size: ${props => props.isClicked === "registrarse" ? "27px" : "25px"};
-    color:${props => props.isClicked === "registrarse" ? "#ff0" : "#eaea5f"};
+const RegisterButton = styled(GridItem)`
+    text-align: center;
+    font-size: ${props => props.$isClicked === "registrarse" ? "27px" : "25px"};
+    color:${props => props.$isClicked === "registrarse" ? "#ff0" : "#eaea5f"};
     cursor: pointer;
     &:hover {
         font-size: 27px;
         color: #ff0;
     }
 `
-const DivContent = styled(Grid)`
+const DivContent = styled(GridContainer)`
     padding: 15px 34px;
 `
 const ErrorMsg = styled.p`
     color: #c6384c;
     font-size: 14px;
-    margin: ${props => props.header ? '0px;' : '5px 0px 10px 10px;'}
+    margin: ${props => props.$header ? '0px;' : '5px 0px 10px 10px;'}
 `
 const FooterLink = styled(Link)`
     color: #eaea5f;
@@ -89,7 +91,7 @@ function Auth(props) {
     const { singUp, login } = useAuth()
     const [ passwordError, setPasswordError ] = useState("")
     const [ hasAccount, setHasAccount ] = useState(true)
-    const [ handleStyle, setHandleStyle ] = useState("")
+    const [ handleStyle, setHandleStyle ] = useState("ingresar")
     const [ emailError, setEmailError ] = useState("")
     const [ loading, setLoading ] = useState(false)
     const [ error, setError]  = useState("")
@@ -150,16 +152,15 @@ function Auth(props) {
     }
 
     return (
-        <Backimage container justifyContent="center" alignItems="center">
-            <GridSession>
+        <Backimage justifyContent="center" alignItems="center">
+            <GridSession direction='column'>
                 <RowActions
-                    container
                     alignItems="center"
                     justifyContent="space-around"
                     direction="row"
                 >
-                    <ButtonRegistrarse
-                        isClicked={handleStyle}
+                    <RegisterButton
+                        $isClicked={handleStyle}
                         onClick={() => {
                             setHasAccount(false)
                             setHandleStyle("registrarse")
@@ -169,9 +170,9 @@ function Auth(props) {
                         }}
                     >
                         Registrarse
-                    </ButtonRegistrarse>
-                    <ButtonIngresar
-                        isClicked={handleStyle}
+                    </RegisterButton>
+                    <LoginButton
+                        $isClicked={handleStyle}
                         onClick={() => {
                             setHasAccount(true)
                             setHandleStyle("ingresar")
@@ -181,14 +182,14 @@ function Auth(props) {
                         }}
                     >
                         Ingresar
-                    </ButtonIngresar>
+                    </LoginButton>
                 </RowActions>
                 {error &&
-                    <Grid container justifyContent="center">
-                        <ErrorMsg header>{error}</ErrorMsg>
-                    </Grid>
+                    <GridContainer justifyContent="center">
+                        <ErrorMsg $header>{error}</ErrorMsg>
+                    </GridContainer>
                 }
-                <DivContent container direction="column">
+                <DivContent direction="column">
                     <label htmlFor="email">Correo electrónico</label>
                     <InputSession
                         type="email"

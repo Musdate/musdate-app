@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import { GridContainer, GridItem } from './Globals/Grid';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
+import DefaultImage from '../.images/DefaultImage.png'
+import Loading from './Globals/Loading';
 import styled from 'styled-components';
-import Loading from './Loading';
+import Error from './Globals/Error';
 
-const GridContainer = styled(Grid)`
-    max-width: 1500px;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: calc(100vh - 150px);
-`
-const GridBox = styled(Grid)`
+const GridBox = styled(GridContainer)`
     width: 225px;
     height: 325px;
     background-image: url(${props => props.image});
@@ -39,7 +34,7 @@ const GridBox = styled(Grid)`
         height: 250px;
     }
 `
-const TitleCat = styled(Grid)`
+const TitleCat = styled(GridItem)`
     text-align: center;
     cursor: pointer;
     height: 50px;
@@ -50,16 +45,14 @@ const TitleCat = styled(Grid)`
     display: block;
     font-size: clamp(20px, 2vw, 30px);
     font-weight: bold;
-    width: 33%;
 `
 const ContainerBox = styled.div`
     position: relative;
     margin: 5px 5px;
 `
-const TopBox = styled(Grid)`
+const TopBox = styled(GridContainer)`
     position: absolute;
     color: white;
-    width: 100%;
     font-size: 14px;
     font-weight: 600;
     text-align: center;
@@ -82,23 +75,23 @@ const BottomBox = styled.div`
     color: white;
     background-color:
     ${props =>
-        props.demoColor === 'Seinen' && `rgba(166, 12, 12, 0.74);`
+        props.demoColor === 'seinen' && `rgba(166, 12, 12, 0.74);`
     }
     ${props =>
-        props.demoColor === 'Shoujo' && `rgba(206, 117, 192, 0.74);`
+        props.demoColor === 'shoujo' && `rgba(206, 117, 192, 0.74);`
     }
     ${props =>
-        props.demoColor === 'Shounen' && `rgba(223, 130, 30, 0.74);`
+        props.demoColor === 'shounen' && `rgba(223, 130, 30, 0.74);`
     }
     ${props =>
-        props.demoColor === 'Josei' && `rgba(113, 11, 159, 0.74);`
+        props.demoColor === 'josei' && `rgba(113, 11, 159, 0.74);`
     }
     width: 100%;
     bottom: 0px;
     min-height: 35px;
     line-height: 30px;
 `
-const RatingBox = styled(Grid)`
+const RatingBox = styled(GridContainer)`
     background-color: rgba(0,0,0,.6);
     min-height: 20px;
     max-width: max-content;
@@ -108,126 +101,109 @@ const RatingBox = styled(Grid)`
 const StarRate = styled(StarRateRoundedIcon)`
     color: #ffdc5e;
 `
-const SelectorContainer = styled(Grid)`
-    margin: 15px 5px 5px 5px;
+const SelectorContainer = styled(GridContainer)`
+    margin: 5px;
 `
 
 const Box = (props) => {
     const {
         title,
-        image,
+        imageData,
         demography,
         category,
         productId,
         rating
     } = props
 
+    let ImageUrl = DefaultImage
+    if(imageData){
+        ImageUrl = `https://uploads.mangadex.org/covers/${productId}/${imageData.attributes.fileName}.512.jpg`
+    }
+
     return(
         <Link to={`/${category.toLowerCase()}/${productId}`}>
             <ContainerBox id="ContainerBox">
-                <TopBox container direction="column" alignItems="flex-end">
+                <TopBox direction="column" alignItems="flex-end">
                     <TitleBox>
                         {title}
                     </TitleBox>
-                    <RatingBox container direction="row" alignItems="center">
+                    <RatingBox direction="row" alignItems="center">
                         <StarRate />
                         {rating}
                     </RatingBox>
                 </TopBox>
-                <GridBox image={image} />
-                <BottomBox demoColor={demography}>
-                    {demography}
+                <GridBox image={ImageUrl} />
+                <BottomBox demoColor={demography ? demography : 'shounen'}>
+                    {demography ? demography.charAt(0).toUpperCase() + demography.slice(1) : 'none'}
                 </BottomBox>
             </ContainerBox>
         </Link>
     );
 }
 
-const getMangas = async (setMangas, catState, setRandomMangas, setError, setIsLoading) => {
-    await db.collection(catState.toLowerCase())
-        //.where('rating', '>', '8.5')
-        .get()
-        .then(querySnapshot => {
-            const mangas = []
-            querySnapshot.forEach(doc => {
-                mangas.push({...doc.data()})
-            });
-            setMangas(mangas);
-            setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)));
-            setIsLoading(false)
-        })
-        .catch(error => {
-            setError(error.message)
-            setIsLoading(false)
-        });
-}
+async function getMangas(props){
+    const {
+        setMangas,
+        setError,
+        setIsLoading
+    } = props
 
-// function getRandom(arr, n) {
-//     var result = new Array(n),
-//         len = arr.length,
-//         taken = new Array(len);
-//     if (n > len)
-//         throw new RangeError("getRandom: more elements taken than available");
-//     while (n--) {
-//         var x = Math.floor(Math.random() * len);
-//         result[n] = arr[x in taken ? taken[x] : x];
-//         taken[x] = --len in taken ? taken[len] : len;
-//     }
-//     return result;
-// }
+    const pageReq = await fetch('https://us-central1-musdate-react-app.cloudfunctions.net/api')
+    .catch(error => {
+        setError(error.message);
+        setIsLoading(false);
+    });
+    await pageReq.json()
+    .then(mangasData => {
+        setMangas(mangasData.data);
+        setIsLoading(false);
+    })
+    .catch(error => {
+        setError(error.message);
+        setIsLoading(false);
+    });
+}
 
 function Main(props) {
     const [ catState, setCatState ] = useState('MANGA')
     const [ mangas, setMangas ] = useState([])
-    const [ randomMangas, setRandomMangas ] = useState([])
-    const [ error, setError ] = useState()
+    const [ error, setError ] = useState('')
     const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
-        getMangas(setMangas, catState, setRandomMangas, setError, setIsLoading);
+        getMangas({setMangas, catState, setError, setIsLoading});
     }, [catState]);
 
     return (
-        <GridContainer id="GridContainer" container>
+        <>
             {isLoading ?
                 <Loading />
             :
                 <>
-                    <SelectorContainer container direction="row" justifyContent="space-around">
-                        <TitleCat item xs selected={catState === 'MANGA' && 'grey'}onClick={() => {setCatState('MANGA')}}>Mangas</TitleCat>
-                        <TitleCat item xs selected={catState === 'MANHUA' && 'grey'} onClick={() => {setCatState('MANHUA')}}>Manhua</TitleCat>
-                        <TitleCat item xs selected={catState === 'MANHWA' && 'grey'} onClick={() => {setCatState('MANHWA')}}>Manhwa</TitleCat>
+                    <SelectorContainer direction="row" justifyContent="space-around">
+                        <TitleCat selected={catState === 'MANGA' && 'grey'} onClick={() => {setCatState('MANGA')}}>Mangas</TitleCat>
+                        <TitleCat selected={catState === 'MANHUA' && 'grey'} onClick={() => {setCatState('MANHUA')}}>Manhua</TitleCat>
+                        <TitleCat selected={catState === 'MANHWA' && 'grey'} onClick={() => {setCatState('MANHWA')}}>Manhwa</TitleCat>
                     </SelectorContainer>
                     {error &&
-                        <Grid style={{background: 'lightcoral'}} container direction="column" justifyContent="center" alignContent="center">
-                            <h1>Houston, tenemos un problema:</h1>
-                            <p style={{fontFamily: 'cursive', textAlign: 'center'}}>{`"${error}"`}</p>
-                            <h3>{`...Problemas de tener una Base de datos gratuita :(`}</h3>
-                        </Grid>
+                        <Error error={error} />
                     }
-                    <Grid container justifyContent="space-between">
-                        {randomMangas.map((p, index) => (
+                    <GridContainer justifyContent="space-between">
+                        {mangas.map((p, index) => (
                             <Box
                                 key={index}
-                                title={p.title}
-                                image={p.image}
-                                demography={p.demography}
-                                category={p.category}
-                                productId={p.productId}
-                                rating={p.rating}
+                                imageData={p.relationships.find((relation) => relation.type === "cover_art")}
+                                title={p.attributes.title.en}
+                                demography={p.attributes.publicationDemographic}
+                                category={p.type}
+                                productId={p.id}
+                                rating={0}
                             />
                         ))}
-                    </Grid>
-                    <button
-                        style={{margin: '10px 0px 30px 5px'}}
-                        onClick={() => setRandomMangas((mangas.sort(() => Math.random() - Math.random()).slice(0, 24)))}
-                        disabled={error}
-                    >
-                        Actualizar
-                    </button>
+                    </GridContainer>
                 </>
             }
-        </GridContainer>
+        </>
     );
 }
 

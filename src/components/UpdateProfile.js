@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
+import { GridContainer } from './Globals/Grid';
 import { useHistory } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
-import { Grid } from '@material-ui/core';
 import styled from 'styled-components'
 import 'firebase/auth';
 
@@ -29,7 +29,7 @@ const ErrorMsg = styled.p`
     color: #c6384c;
     margin: ${props => props.header ? '0px;' : '5px 0px 15px 10px;'}
 `
-const GridContainer = styled(Grid)`
+const GridInfo = styled(GridContainer)`
     width: clamp(300px, 50%, (100% - 20px));
     min-width: 300px;
     display: flex;
@@ -90,8 +90,8 @@ function UpdateProfile(props) {
     }
 
     return (
-        <Grid container justifyContent="center" alignItems="center">
-            <GridContainer direction="column">
+        <GridContainer alignItems='center' justifyContent='center'>
+            <GridInfo direction="column">
                 <h1>Actualizar perfil</h1>
                 {error &&
                     <ErrorMsg header>{error}</ErrorMsg>
@@ -114,8 +114,8 @@ function UpdateProfile(props) {
                 />
                 <ErrorMsg>{passwordError}</ErrorMsg>
                     <ButtonSession disabled={loading} onClick={handleSubmit}>Actualizar</ButtonSession>
-            </GridContainer>
-        </Grid>
+            </GridInfo>
+        </GridContainer>
     );
 }
 
