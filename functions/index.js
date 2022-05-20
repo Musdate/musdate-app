@@ -22,9 +22,7 @@ api.get('/', async (req, res) => {
 api.get('/detail/:id', async (req, res) => {
     await axios.get(`https://api.mangadex.org/manga/${req.params.id}?includes[]=cover_art`)
     .then(data => {
-        const imageData = data.data.data.relationships.find((relation) => relation.type === "cover_art")
-        let imageUrl = `https://uploads.mangadex.org/covers/${req.params.id}/${imageData.attributes.fileName}.512.jpg`
-        res.json({data: data.data, image :imageUrl});
+        res.send(data.data);
     })
     .catch(error => {
         res.sendStatus(error);

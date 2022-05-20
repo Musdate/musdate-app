@@ -1,7 +1,7 @@
 import React from 'react';
 import { GridContainer } from '../Globals/Grid';
-import { Link } from 'react-router-dom';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import { Link } from 'react-router-dom';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import styled from 'styled-components';
 
 const ChapterContainer = styled.div`
@@ -27,26 +27,14 @@ const ChapterRow = styled(GridContainer)`
 `
 const TextInfo = styled.div`
     margin-bottom: 15px;
-    ${props => props.title &&
-        `font-weight: 600;
-        font-size: 30px;`
-    }
-    ${props => props.genres &&
-        `margin-right: 15px;
-        font-weight: 600;
-        font-size: 17px;`
-    }
-    ${props => props.alt &&
-        `margin-right: 15px;
-        font-size: 17px;`
-    }
+    font-weight: 600;
+    font-size: 30px;
 `
 
 function Chapters(props) {
-    const {
-        sliceChapters,
-        category
-    } = props
+    // const {
+    //     category
+    // } = props
 
     // const [ showAll, setShowAll ] = useState(false);
 
@@ -65,8 +53,8 @@ function Chapters(props) {
             direction="column"
         >
             <ChapterContainer>
-                <TextInfo title='true'>SECCION DE CAPITULOS:</TextInfo>
-                {sliceChapters.map((chap, index) => (
+                <TextInfo>SECCION DE CAPITULOS:</TextInfo>
+                {/* {sliceChapters.map((chap, index) => (
                     <Link style={{textDecoration: 'none'}} to={`/${category}/${chap.id}/page=${chap.index}`}>
                         <ChapterRow
                             container
@@ -77,7 +65,7 @@ function Chapters(props) {
                             <ExpandMoreIcon />
                         </ChapterRow>
                     </Link>
-                ))}
+                ))} */}
                 <ChapterRow
                     justifyContent="center"
                     alignItems="center"
